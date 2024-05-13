@@ -1,4 +1,3 @@
-import os
 from pathlib import Path
 
 from .artifact_provider import ArtifactProvider

@@ -3,17 +3,16 @@ import re
 from enum import Enum
 from typing import Callable
 
+from langchain.prompts import ChatPromptTemplate
+from langchain_community.chat_models import ChatOpenAI
 from langchain_core.language_models import BaseChatModel
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import Runnable
-from langchain.prompts import ChatPromptTemplate
-from langchain_openai import ChatOpenAI
 
+from cache.cache_manager import CacheManager
 from .classifier import Classifier, ClassificationResult, Element
 from .context_provider import ContextProvider
 from ..module import ModuleConfiguration
-
-from project.cache.cache_manager import CacheManager
 
 
 class StepResult(Enum):
@@ -38,9 +37,11 @@ class PromptStep:
 
 class DefaultMultiStepPrompts:
     @staticmethod
-    def callable_contains_tag(tag: str, text: str, positive: StepResult, negative: StepResult) -> Callable[[str], StepResult]:
+    def callable_contains_tag(tag: str, text: str, positive: StepResult, negative: StepResult) -> Callable[
+        [str], StepResult]:
         """Checks whether a <tag>value</tag> with a given tag exists
         and whether the given text exists within the encased value."""
+
         def contains_string(output: str) -> StepResult:
             match = re.search(f"<{tag}>(.*?)</{tag}>", output.lower())
             if match:
@@ -57,14 +58,17 @@ class DefaultMultiStepPrompts:
             PromptStep(
                 [
                     ("system", "Your job is to determine if an artifact of a software system describes a component."),
-                    ("user", "You are given a part of a {source_type}. Does it refer specifically to a component? Give your reasoning and then answer with '<component>yes</component>' or '<component>no</component>'. \n {source_type}: \n'''{source_content}'''")
+                    ("user",
+                     "You are given a part of a {source_type}. Does it refer specifically to a component? Give your reasoning and then answer with '<component>yes</component>' or '<component>no</component>'. \n {source_type}: \n'''{source_content}'''")
                 ],
                 callable_contains_tag("component", "yes", StepResult.CONTINUE, StepResult.UNRELATED)
             ),
             PromptStep(
                 [
-                    ("system", "Your job is to determine if there is a traceability link between two artifacts of a system."),
-                    ("user", """Below are two artifacts from the same software system. Is there a traceability link between (1) and (2)? Give your reasoning and then answer with 'yes' or 'no' enclosed in <trace> </trace>.\n (1) {source_type}: '''{source_content}''' \n (2) {target_type}: '''{target_content}''' """)
+                    ("system",
+                     "Your job is to determine if there is a traceability link between two artifacts of a system."),
+                    ("user",
+                     """Below are two artifacts from the same software system. Is there a traceability link between (1) and (2)? Give your reasoning and then answer with 'yes' or 'no' enclosed in <trace> </trace>.\n (1) {source_type}: '''{source_content}''' \n (2) {target_type}: '''{target_content}''' """)
                 ],
                 callable_contains_tag("trace", "yes", StepResult.RELATED, StepResult.UNRELATED)
             )
@@ -72,8 +76,10 @@ class DefaultMultiStepPrompts:
         "source_neighbouring_siblings_reasoning": [
             PromptStep(
                 [
-                    ("system", "Your job is to determine if there is a traceability link between two artifacts of a system."),
-                    ("user", """Below are two artifacts from the same software system. Is there a traceability link between (1) and (2)? Give your reasoning and then answer with 'yes' or 'no' enclosed in <trace> </trace>.\n (1) {source_type}: '''{source_content}''' \n (2) {target_type}: '''{target_content}''' \n\n (1) is surrounded by this:\n {source_context_pre}\n{source_content}\n{source_context_post}""")
+                    ("system",
+                     "Your job is to determine if there is a traceability link between two artifacts of a system."),
+                    ("user",
+                     """Below are two artifacts from the same software system. Is there a traceability link between (1) and (2)? Give your reasoning and then answer with 'yes' or 'no' enclosed in <trace> </trace>.\n (1) {source_type}: '''{source_content}''' \n (2) {target_type}: '''{target_content}''' \n\n (1) is surrounded by this:\n {source_context_pre}\n{source_content}\n{source_context_post}""")
                 ],
                 callable_contains_tag("trace", "yes", StepResult.RELATED, StepResult.UNRELATED)
             )
@@ -154,7 +160,8 @@ class MultiStepClassifier(Classifier):
             return data[0]
         return None
 
-    def __cache_target(self, prompt_template: str, input: dict[str, str], source: Element, target: Element, output: str):
+    def __cache_target(self, prompt_template: str, input: dict[str, str], source: Element, target: Element,
+                       output: str):
         data = {
             "source": source.identifier,
             "target": target.identifier,
@@ -169,7 +176,8 @@ class MultiStepClassifier(Classifier):
             element = element.parent
         return element
 
-    def __get_relevant_neighbouring_sibling_context(self, element: Element, pre: int, post: int, is_source: bool, prompt: PromptStep) \
+    def __get_relevant_neighbouring_sibling_context(self, element: Element, pre: int, post: int, is_source: bool,
+                                                    prompt: PromptStep) \
             -> (str, str):
         if pre == 0 and post == 0:
             return "", ""

@@ -1,24 +1,37 @@
 import json
-import time
+import os
+from base64 import b64encode
 from hashlib import shake_128
 
-import openai
+import dotenv
 from langchain.embeddings import CacheBackedEmbeddings
 from langchain.storage import LocalFileStore
-from langchain_community.embeddings import OpenAIEmbeddings
+from langchain_community.embeddings import OllamaEmbeddings
 from langchain_core.embeddings import Embeddings
 
 from .embedding_creator import EmbeddingCreator, Element, Embedding
 from ..module import ModuleConfiguration
 
 
-class OpenAIEmbeddingCreator(EmbeddingCreator):
+class OLLAMAEmbeddingCreator(EmbeddingCreator):
     __embedder: Embeddings
 
     def __init__(self, configuration: ModuleConfiguration):
         store = LocalFileStore(configuration.args.setdefault("path", "./storage/embeddings/"))
         configuration.args.pop("path")
-        embedding_model = OpenAIEmbeddings(model=configuration.args.setdefault("model", "text-embedding-ada-002"))
+        dotenv.load_dotenv()
+
+        host = os.environ.get("OLLAMA_HOST")
+        username = os.environ.get("OLLAMA_USER")
+        password = os.environ.get("OLLAMA_PASSWORD")
+
+        if host is None or username is None or password is None:
+            raise ValueError("OLLAMA_USER and OLLAMA_PASSWORD must be set in .env file")
+        headers = {'Authorization': "Basic " + b64encode(f"{username}:{password}".encode('utf-8')).decode("ascii")}
+
+        embedding_model = OllamaEmbeddings(base_url=host,
+                                           model=configuration.args.setdefault("model", "nomic-embed-text:v1.5"),
+                                           headers=headers)
         hash = shake_128(configuration.name.encode())
         hash.update(json.dumps(configuration.args, sort_keys=True).encode())
         namespace = hash.hexdigest(31)
@@ -28,11 +41,7 @@ class OpenAIEmbeddingCreator(EmbeddingCreator):
 
     def calculate_embedding(self, element: Element) -> Embedding:
         print("Embedding: " + element.identifier)
-        try:
-            embedding = Embedding(self.__embedder.embed_documents([element.content])[0])
-        except openai.RateLimitError as e:
-            time.sleep(60)
-            embedding = Embedding(self.__embedder.embed_documents([element.content])[0])
+        embedding = Embedding(self.__embedder.embed_documents([element.content])[0])
         return embedding
 
     def calculate_multiple_embeddings(self, elements: list[Element]) -> list[Embedding]:

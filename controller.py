@@ -2,13 +2,12 @@ import itertools
 import json
 from hashlib import sha256
 
-from pipeline_modules.module import PipelineConfiguration, ModuleConfiguration
-
 from pipeline_modules.artifact_providers.artifact_provider import ArtifactProvider, ArtifactProviderBuilder
-from pipeline_modules.classifier.context_provider import ContextProvider
 from pipeline_modules.classifier.classifier import Classifier, ClassifierBuilder
+from pipeline_modules.classifier.context_provider import ContextProvider
 from pipeline_modules.element_store.element_store import ElementStore, ElementStoreBuilder, EmbeddedElement
-from pipeline_modules.embedding_creator.embedding_creator import EmbeddingCreator, EmbeddingCreatorBuilder, Embedding
+from pipeline_modules.embedding_creator.embedding_creator import EmbeddingCreator, EmbeddingCreatorBuilder
+from pipeline_modules.module import PipelineConfiguration, ModuleConfiguration
 from pipeline_modules.preprocessors.preprocessor import Preprocessor, PreprocessorBuilder
 from pipeline_modules.result_aggregator.result_aggregator import ResultAggregator, ResultAggregatorBuilder
 from pipeline_modules.result_aggregator.result_aggregator import TraceLink

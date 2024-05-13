@@ -1,19 +1,15 @@
 import json
 import re
 
+from langchain.prompts import ChatPromptTemplate
+from langchain_community.chat_models import ChatOpenAI
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import Runnable
 
+from cache.cache_manager import CacheManager
 from .classifier import Classifier, ClassificationResult, Element
 from .context_provider import ContextProvider
-from ..element_store.element_store import ElementStore
 from ..module import ModuleConfiguration
-
-from langchain.chains import LLMChain
-from langchain.prompts import ChatPromptTemplate
-from langchain_openai import ChatOpenAI
-
-from project.cache.cache_manager import CacheManager
 
 
 class SelectionClassifier(Classifier):
@@ -37,7 +33,6 @@ class SelectionClassifier(Classifier):
 
     def __setup_prompt(self):
         pass
-
 
     def __get_input_key(self, source: Element, target: Element) -> str:
         inputs = {

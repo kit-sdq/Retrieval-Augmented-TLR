@@ -1,12 +1,11 @@
 import tree_sitter
+from tree_sitter import Node, Parser
+from tree_sitter_languages import get_language
 
+from cache.cache_manager import CacheManager
 from .preprocessor import Preprocessor
 from ..knowledge import Element, Artifact
 from ..module import ModuleConfiguration
-from project.cache.cache_manager import CacheManager
-
-from tree_sitter import Node, Parser
-from tree_sitter_languages import get_language
 
 
 class CodeMethodPreprocessor(Preprocessor):

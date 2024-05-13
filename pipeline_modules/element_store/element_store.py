@@ -1,8 +1,8 @@
-from typing import Protocol
 from typing import NamedTuple
+from typing import Protocol
+
 from ..embedding_creator.embedding_creator import Embedding
 from ..knowledge import Element
-
 from ..module import ModuleConfiguration
 
 

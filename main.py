@@ -1,15 +1,9 @@
-from dotenv import load_dotenv
-#load_dotenv()
-from langchain.cache import SQLiteCache
-
 import json
 from typing import Any
 
-from project.pipeline_modules.module import ModuleConfiguration, PipelineConfiguration
-from project.controller import Controller
-
-from project.cache.cache_manager import CacheManager
-
+from cache.cache_manager import CacheManager
+from controller import Controller
+from pipeline_modules.module import ModuleConfiguration, PipelineConfiguration
 
 MODULE_TYPES = {
     "classifier": "classifier",
@@ -31,6 +25,7 @@ def __load_module_config(name: str, arguments: Any) -> ModuleConfiguration:
     config.args = arguments[name]["args"]
     return config
 
+
 def load_config(path: str):
     # TODO: implement in separate file/class
     file = open(path)
@@ -49,9 +44,9 @@ def load_config(path: str):
     return config
 
 
-
 if __name__ == '__main__':
     from evaluation import calculate_f1
+
     do_reverse = False
 
     results = list()
@@ -136,4 +131,3 @@ if __name__ == '__main__':
             csv_string_reversed += f"{round(result[0], 3)},{round(result[1], 3)},{round(result[2], 3)},"
         print("CSV_reversed:")
         print(csv_string_reversed)
-

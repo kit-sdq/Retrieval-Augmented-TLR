@@ -1,9 +1,5 @@
 import csv
 
-from sklearn.metrics import f1_score
-from sklearn.metrics import precision_score
-from sklearn.metrics import recall_score
-
 
 def calculate_f1(results: list[tuple[str, str]], ground_truth_path: str, print_pairs: bool = True, reverse: bool = False) -> (float, float, float):
     with open(ground_truth_path, 'r') as file:

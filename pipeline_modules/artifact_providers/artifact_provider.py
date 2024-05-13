@@ -1,4 +1,5 @@
 from typing import Protocol
+
 from ..knowledge import Artifact
 from ..module import ModuleConfiguration
 

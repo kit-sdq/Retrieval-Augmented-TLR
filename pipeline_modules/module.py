@@ -1,5 +1,4 @@
 import typing
-from collections.abc import Mapping
 
 
 class ModuleConfiguration:

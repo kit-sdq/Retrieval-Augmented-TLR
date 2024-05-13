@@ -1,8 +1,7 @@
+from cache.cache_manager import CacheManager
 from .preprocessor import Preprocessor
 from ..knowledge import Artifact, Element
 from ..module import ModuleConfiguration
-
-from project.cache.cache_manager import CacheManager
 
 
 class SimpleTextPreprocessor(Preprocessor):

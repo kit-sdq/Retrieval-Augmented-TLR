@@ -1,8 +1,6 @@
 from typing import Protocol
-from typing import NamedTuple
-from ..knowledge import Element
-from ..classifier.classifier import ClassificationResult
 
+from ..classifier.classifier import ClassificationResult
 from ..module import ModuleConfiguration
 
 

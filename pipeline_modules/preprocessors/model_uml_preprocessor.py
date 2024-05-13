@@ -1,9 +1,9 @@
+import xml.etree.ElementTree as ET
+
+from cache.cache_manager import CacheManager
 from .preprocessor import Preprocessor
 from ..knowledge import Element, Artifact
 from ..module import ModuleConfiguration
-from project.cache.cache_manager import CacheManager
-
-import xml.etree.ElementTree as ET
 
 
 class ModelUMLPreprocessor(Preprocessor):
@@ -50,14 +50,14 @@ class ModelUMLPreprocessor(Preprocessor):
         root = ET.fromstring(artifact.content)
         i = 0
         for packagedElement in root.findall('packagedElement'):
-            element_type = packagedElement.get(f'{{{ns['xmi']}}}type')
+            element_type = packagedElement.get(f'{{{ns["xmi"]}}}type')
 
             if not self.use_prefix:
                 # remove the prefix, such as "uml:" from "uml:Component"
                 substrings = element_type.split(':', 1)
                 element_type = substrings[1] if len(substrings) > 1 else element_type
 
-            element_id = packagedElement.get(f'{{{ns['xmi']}}}id')
+            element_id = packagedElement.get(f'{{{ns["xmi"]}}}id')
             element_name = packagedElement.get('name')
             content = f'Type: {element_type}, Name: {element_name}'
             if self.include_interface_realizations:

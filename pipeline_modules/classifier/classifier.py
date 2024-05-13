@@ -1,7 +1,6 @@
 from typing import Protocol
 
 from .context_provider import ContextProvider
-from ..element_store.element_store import ElementStore
 from ..knowledge import Element
 from ..module import ModuleConfiguration
 
@@ -26,13 +25,15 @@ class ClassifierBuilder:
     from .reasoning_classifier import ReasoningClassifier
     from .selection_classifier import SelectionClassifier
     from .multi_step_classifier import MultiStepClassifier
+    from .simple_classifier_ollama import SimpleOllamaClassifier
 
     CLASSIFIERS = {
         'mock': MockClassifier,
         'simple': SimpleClassifier,
         'chain_of_thought': ReasoningClassifier,
         'selection': SelectionClassifier,
-        'multi_step': MultiStepClassifier
+        'multi_step': MultiStepClassifier,
+        'simple_ollama': SimpleOllamaClassifier
     }
 
     def build_classifier(self, configuration: ModuleConfiguration, context_provider: ContextProvider) -> Classifier:

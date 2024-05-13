@@ -1,6 +1,5 @@
 from .classifier import Classifier, Element, ClassificationResult
 from .context_provider import ContextProvider
-from ..element_store.element_store import ElementStore
 
 from ..module import ModuleConfiguration
 

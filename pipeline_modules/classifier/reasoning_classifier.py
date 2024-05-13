@@ -1,16 +1,15 @@
 import json
 import re
 
+from langchain.prompts import ChatPromptTemplate
+from langchain_community.chat_models import ChatOpenAI
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import Runnable
-from langchain.prompts import ChatPromptTemplate
-from langchain_openai import ChatOpenAI
 
+from cache.cache_manager import CacheManager
 from .classifier import Classifier, ClassificationResult, Element
 from .context_provider import ContextProvider
 from ..module import ModuleConfiguration
-
-from project.cache.cache_manager import CacheManager
 
 
 class ReasoningClassifier(Classifier):

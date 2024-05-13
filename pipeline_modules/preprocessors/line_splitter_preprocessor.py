@@ -1,8 +1,7 @@
+from cache.cache_manager import CacheManager
 from .preprocessor import Preprocessor
 from ..knowledge import Element, Artifact
 from ..module import ModuleConfiguration
-from project.cache.cache_manager import CacheManager
-import pysbd
 
 
 class LineSplitterPreprocessor(Preprocessor):

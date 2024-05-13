@@ -1,7 +1,7 @@
 import re
 
-from project.pipeline_modules.element_store.element_store import ElementStore
-from project.pipeline_modules.knowledge import Element
+from pipeline_modules.element_store.element_store import ElementStore
+from pipeline_modules.knowledge import Element
 
 
 class ContextProvider:

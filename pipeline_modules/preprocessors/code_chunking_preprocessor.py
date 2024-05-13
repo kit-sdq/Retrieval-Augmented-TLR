@@ -1,11 +1,9 @@
-from langchain_core.documents import Document
+from langchain.text_splitter import Language, RecursiveCharacterTextSplitter
 
+from cache.cache_manager import CacheManager
 from .preprocessor import Preprocessor
 from ..knowledge import Element, Artifact
 from ..module import ModuleConfiguration
-from project.cache.cache_manager import CacheManager
-
-from langchain.text_splitter import Language, RecursiveCharacterTextSplitter
 
 
 class CodeChunkingPreprocessor(Preprocessor):

@@ -1,6 +1,7 @@
 from typing import Protocol
-from ..module import ModuleConfiguration
+
 from ..knowledge import Artifact, Element
+from ..module import ModuleConfiguration
 
 
 class Preprocessor(Protocol):

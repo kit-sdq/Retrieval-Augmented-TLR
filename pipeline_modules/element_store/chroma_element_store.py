@@ -1,14 +1,12 @@
-from typing import Any
+from hashlib import sha256
+from hashlib import shake_128
+
+import chromadb
 
 from .element_store import ElementStore, EmbeddedElement
 from ..embedding_creator.embedding_creator import Embedding
 from ..knowledge import Element
 from ..module import ModuleConfiguration
-from hashlib import sha256
-from hashlib import shake_128
-import json
-import numpy as np
-import chromadb
 
 
 class ChromaElementStore(ElementStore):

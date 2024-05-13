@@ -1,7 +1,9 @@
 import json
+import os
+from base64 import b64encode
 
 from langchain.prompts import ChatPromptTemplate
-from langchain_community.chat_models import ChatOpenAI
+from langchain_community.chat_models import ChatOllama
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import Runnable
 
@@ -11,11 +13,11 @@ from .context_provider import ContextProvider
 from ..module import ModuleConfiguration
 
 
-class SimpleClassifier(Classifier):
+class SimpleOllamaClassifier(Classifier):
     """A classifier comparing a single source and a single target element at a time, not using additional context."""
     __configuration: ModuleConfiguration
     __prompt: ChatPromptTemplate
-    __llm: ChatOpenAI
+    __llm: ChatOllama
     __parser: StrOutputParser
     __chain: Runnable
 
@@ -25,7 +27,18 @@ class SimpleClassifier(Classifier):
         self.__configuration = configuration
         self.__context_provider = context_provider
         self.__setup_prompt()
-        self.__llm = ChatOpenAI(model=self.__configuration.args.setdefault("model", "gpt-3.5-turbo-0125"), temperature=0)
+
+        host = os.environ.get("OLLAMA_HOST")
+        username = os.environ.get("OLLAMA_USER")
+        password = os.environ.get("OLLAMA_PASSWORD")
+
+        if host is None or username is None or password is None:
+            raise ValueError("OLLAMA_USER and OLLAMA_PASSWORD must be set in .env file")
+
+        headers = {'Authorization': "Basic " + b64encode(f"{username}:{password}".encode('utf-8')).decode("ascii")}
+
+        self.__llm = ChatOllama(base_url=host,model=self.__configuration.args.setdefault("model", "llama3"), temperature=0,
+                                headers=headers)
         self.__parser = StrOutputParser()
         self.__chain = self.__prompt | self.__llm | self.__parser
 

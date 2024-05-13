@@ -1,8 +1,9 @@
-import sqlite3
-import json
 import hashlib
+import json
+import os
+import sqlite3
 
-from project.pipeline_modules.module import ModuleConfiguration
+from pipeline_modules.module import ModuleConfiguration
 
 cache: 'CacheManager | None'  # TODO: make actual Singleton or even better: find a good solution
 
@@ -17,6 +18,8 @@ class CacheManager:
     def __init__(self, database_name: str, folder_path: str = "./storage"):
         self.__database_name = database_name
         self.__folder_path = folder_path
+        if not os.path.exists(self.__folder_path):
+            os.makedirs(self.__folder_path)
         self.__connection = sqlite3.connect(self.__folder_path + "/" + self.__database_name + ".sqlite3")
         self.__cursor = self.__connection.cursor()
 
