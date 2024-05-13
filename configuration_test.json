@@ -1,0 +1,47 @@
+{
+    "source_artifact_provider": {
+        "name": "nl",
+        "args": {"artifact_type": "requirement", "path": "C:/Uni/WS23-24/datasets/eTour_en/UC"}
+    },
+    "target_artifact_provider": {
+        "name": "nl",
+        "args": {"artifact_type": "source code", "path": "C:/Uni/WS23-24/datasets/eTour_en/CC"}
+    },
+    "source_preprocessor": {
+        "name": "sentence",
+        "args": {
+            "language": "en"
+        }
+    },
+    "target_preprocessor": {
+        "name": "code_method",
+        "args": {
+            "language": "java"
+        }
+    },
+    "embedding_creator": {
+        "name": "open_ai",
+        "args": {"path": "./storage/eTour_en/embeddings/", "model": "text-embedding-3-large"}
+    },
+    "source_store": {
+        "name": "chroma",
+        "args": {"direction": "source", "path": "./storage/eTour_en/"}
+    },
+    "target_store": {
+        "name": "chroma",
+        "args": {"direction": "target", "path": "./storage/eTour_en/", "similarity_function": "cosine", "n_results": 20,
+            "dynamic_n": true
+        }
+    },
+    "classifier": {
+        "name": "mock",
+        "args": {"model": "gpt-3.5-turbo-0125", "system_message": true, "use_original_artifacts": true
+        }
+    },
+    "result_aggregator": {
+        "name": "any_connection",
+        "args": {
+            "source_granularity": 0
+        }
+    }
+}

@@ -1,0 +1,54 @@
+{
+    "source_artifact_provider": {
+        "name": "single_file",
+        "args": {"artifact_type": "software architecture documentation", "path": "C:/Uni/WS23-24/datasets/SAD_SAM_CODE/teastore/text_2020/"}
+    },
+    "target_artifact_provider": {
+        "name": "single_file",
+        "args": {"artifact_type": "software architecture model", "path": "C:/Uni/WS23-24/datasets/SAD_SAM_CODE/teastore/model_2020/uml/"}
+    },
+    "source_preprocessor": {
+        "name": "line",
+        "args": {}
+    },
+    "target_preprocessor": {
+        "name": "model_uml",
+        "args": {
+            "include_usages": false,
+            "include_interface_realizations": false,
+            "include_operations": false,
+            "use_prefix": false
+        }
+    },
+    "embedding_creator": {
+        "name": "open_ai",
+        "args": {"path": "./storage/SAD_SAM_CODE/teastore/embeddings/", "model": "text-embedding-3-large"}
+    },
+    "source_store": {
+        "name": "chroma",
+        "args": {"direction": "source", "path": "./storage/sad_sam_code/teastore/", "similarity_function": "cosine", "n_results": 5,
+            "dynamic_n": false
+        }
+    },
+    "target_store": {
+        "name": "chroma",
+        "args": {"direction": "target", "path": "./storage/sad_sam_code/teastore/", "similarity_function": "cosine", "n_results": 5,
+            "dynamic_n": false
+        }
+    },
+    "classifier": {
+        "name": "multi_step",
+        "args": {"model": "gpt-3.5-turbo-0125",
+            "prompt": "source_neighbouring_siblings_reasoning",
+            "source_pre_context": 2,
+            "source_post_context": 2
+        }
+    },
+    "result_aggregator": {
+        "name": "any_connection",
+        "args": {
+            "source_granularity": 1,
+            "target_granularity": 1
+        }
+    }
+}
