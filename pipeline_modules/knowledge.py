@@ -18,7 +18,8 @@ class Element(Knowledge):
     content: str
     compare: bool
 
-    def __init__(self, identifier: str, type: str, content: str, granularity: int, parent: Knowledge | None, compare: bool = True):
+    def __init__(self, identifier: str, type: str, content: str, granularity: int, parent: Knowledge | None,
+                 compare: bool = True):
         super().__init__(identifier=identifier, type=type, content=content)
         self.parent = parent
         self.granularity = granularity
@@ -30,7 +31,7 @@ class Element(Knowledge):
             element = element.parent
         return element
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, str | int | bool | list[float]]:
         """Transforms the Element into a json compatible dictionary representation.
         Parents are referred to by their identifier"""
         dictionary = dict()
@@ -60,6 +61,9 @@ class Element(Knowledge):
                        granularity=element["granularity"],
                        parent=None,
                        compare=element["compare"])
+
+    def __repr__(self):
+        return f"Element(identifier={self.identifier})"
 
 
 class Artifact(Element):

@@ -1,14 +1,13 @@
 from typing import NamedTuple
 from typing import Protocol
 
-from ..embedding_creator.embedding_creator import Embedding
 from ..knowledge import Element
 from ..module import ModuleConfiguration
 
 
 class EmbeddedElement(NamedTuple):
     element: Element
-    embedding: Embedding
+    embedding: list[float]
 
 
 class ElementStore(Protocol):
@@ -18,10 +17,10 @@ class ElementStore(Protocol):
                             entries: list[EmbeddedElement]):
         ...
 
-    def find_similar(self, query: Embedding) -> list[Element]:
+    def find_similar(self, query: list[float]) -> list[Element]:
         ...
 
-    def find_similar_with_distances(self, query: Embedding) -> (list[Element], list[float]):
+    def find_similar_with_distances(self, query: list[float]) -> (list[Element], list[float]):
         ...
 
     def get_by_id(self, identifier: str) -> Element:
@@ -37,10 +36,12 @@ class ElementStore(Protocol):
 class ElementStoreBuilder:
     from .mock_element_store import MockElementStore
     from .chroma_element_store import ChromaElementStore
+    from .custom_element_store import CustomElementStore
 
     STORES = {
         'mock': MockElementStore,
-        'chroma': ChromaElementStore
+        'chroma': ChromaElementStore,
+        'custom': CustomElementStore
     }
 
     def build_element_store(self, configuration: ModuleConfiguration) -> ElementStore:

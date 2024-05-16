@@ -26,6 +26,7 @@ class ClassifierBuilder:
     from .selection_classifier import SelectionClassifier
     from .multi_step_classifier import MultiStepClassifier
     from .simple_classifier_ollama import SimpleOllamaClassifier
+    from .reasoning_classifier_ollama import ReasoningClassifierOllama
 
     CLASSIFIERS = {
         'mock': MockClassifier,
@@ -33,7 +34,8 @@ class ClassifierBuilder:
         'chain_of_thought': ReasoningClassifier,
         'selection': SelectionClassifier,
         'multi_step': MultiStepClassifier,
-        'simple_ollama': SimpleOllamaClassifier
+        'simple_ollama': SimpleOllamaClassifier,
+        'reasoning_ollama': ReasoningClassifierOllama
     }
 
     def build_classifier(self, configuration: ModuleConfiguration, context_provider: ContextProvider) -> Classifier:

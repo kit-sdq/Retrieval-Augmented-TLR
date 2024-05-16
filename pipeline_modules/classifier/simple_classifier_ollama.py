@@ -37,7 +37,8 @@ class SimpleOllamaClassifier(Classifier):
 
         headers = {'Authorization': "Basic " + b64encode(f"{username}:{password}".encode('utf-8')).decode("ascii")}
 
-        self.__llm = ChatOllama(base_url=host,model=self.__configuration.args.setdefault("model", "llama3"), temperature=0,
+        self.__llm = ChatOllama(base_url=host, model=self.__configuration.args.setdefault("model", "llama3:8b"),
+                                temperature=0,
                                 headers=headers)
         self.__parser = StrOutputParser()
         self.__chain = self.__prompt | self.__llm | self.__parser

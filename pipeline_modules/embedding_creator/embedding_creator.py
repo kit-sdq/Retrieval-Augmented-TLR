@@ -4,20 +4,12 @@ from ..knowledge import Element
 from ..module import ModuleConfiguration
 
 
-class Embedding:
-    # depending on third party libraries there can be many different implementations of embeddings.
-    # often they are list[float]
-    embedding: Any
-
-    def __init__(self, embedding: Any):
-        self.embedding = embedding
-
 
 class EmbeddingCreator(Protocol):
-    def calculate_embedding(self, element: Element) -> Embedding:
+    def calculate_embedding(self, element: Element) -> list[float]:
         ...
 
-    def calculate_multiple_embeddings(self, elements: list[Element]) -> list[Embedding]:
+    def calculate_multiple_embeddings(self, elements: list[Element]) -> list[list[float]]:
         ...
 
 

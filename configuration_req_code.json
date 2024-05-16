@@ -9,26 +9,27 @@
     },
     "source_preprocessor": {
         "name": "sentence",
-        "args": {"language": "en"}
+        "args": {"language": "en"
+        }
     },
     "target_preprocessor": {
         "name": "code_chunking",
-        "args": {"language": "java"}
+        "args": {"language": "java","chunk_size": 200}
     },
     "embedding_creator": {
         "name": "ollama",
         "args": {"path": "./storage/eTour_en/embeddings/"}
     },
     "source_store": {
-        "name": "chroma",
-        "args": {"direction": "source", "path": "./storage/eTour_en/"}
+        "name": "custom",
+        "args": {"direction": "source", "path": "./storage/eTour_en_source/"}
     },
     "target_store": {
-        "name": "chroma",
-        "args": {"direction": "target", "path": "./storage/eTour_en/", "similarity_function": "cosine", "n_results": 20}
+        "name": "custom",
+        "args": {"direction": "target", "path": "./storage/eTour_en_target/", "similarity_function": "cosine", "n_results": 50}
     },
     "classifier": {
-        "name": "simple_ollama",
+        "name": "reasoning_ollama",
         "args": {}
     },
     "result_aggregator": {

@@ -9,7 +9,7 @@ from langchain.storage import LocalFileStore
 from langchain_community.embeddings import OllamaEmbeddings
 from langchain_core.embeddings import Embeddings
 
-from .embedding_creator import EmbeddingCreator, Element, Embedding
+from .embedding_creator import EmbeddingCreator, Element
 from ..module import ModuleConfiguration
 
 
@@ -39,12 +39,11 @@ class OLLAMAEmbeddingCreator(EmbeddingCreator):
         self.__embedder = CacheBackedEmbeddings.from_bytes_store(
             embedding_model, store, namespace=namespace)
 
-    def calculate_embedding(self, element: Element) -> Embedding:
+    def calculate_embedding(self, element: Element) -> list[float]:
         print("Embedding: " + element.identifier)
-        embedding = Embedding(self.__embedder.embed_documents([element.content])[0])
-        return embedding
+        return self.__embedder.embed_documents([element.content])[0]
 
-    def calculate_multiple_embeddings(self, elements: list[Element]) -> list[Embedding]:
+    def calculate_multiple_embeddings(self, elements: list[Element]) -> list[list[float]]:
         contents = [x.content for x in elements]
-        embeddings = [Embedding(emb) for emb in self.__embedder.embed_documents(contents)]
+        embeddings = [emb for emb in self.__embedder.embed_documents(contents)]
         return embeddings

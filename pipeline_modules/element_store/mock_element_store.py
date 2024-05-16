@@ -1,4 +1,4 @@
-from .element_store import ElementStore, EmbeddedElement, Element, Embedding
+from .element_store import ElementStore, EmbeddedElement, Element
 from ..module import ModuleConfiguration
 
 
@@ -11,7 +11,7 @@ class MockElementStore(ElementStore):
     def create_vector_store(self, previous_modules_key: str, entries: list[EmbeddedElement]):
         self.__elements = entries
 
-    def find_similar(self, query: Embedding) -> list[Element]:
+    def find_similar(self, query: list[float]) -> list[Element]:
         return [element.element for element in self.__elements]
 
     def get_by_parent_id(self, identifier: str) -> list[EmbeddedElement]:

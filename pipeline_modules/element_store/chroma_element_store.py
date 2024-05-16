@@ -4,7 +4,6 @@ from hashlib import shake_128
 import chromadb
 
 from .element_store import ElementStore, EmbeddedElement
-from ..embedding_creator.embedding_creator import Embedding
 from ..knowledge import Element
 from ..module import ModuleConfiguration
 
@@ -76,7 +75,7 @@ class ChromaElementStore(ElementStore):
         # TODO: Check if elements/embeddings are the same. Raise error if not
         if self.__collection.count() == 0:
             for emb_element in entries:
-                embeddings.append(emb_element.embedding.embedding)
+                embeddings.append(emb_element.embedding)
 
                 element = emb_element.element
                 ids.append(element.identifier)
@@ -100,7 +99,7 @@ class ChromaElementStore(ElementStore):
 
         self.__compare_length = len(self.__collection.get(where={"compare": True})['ids'])
 
-    def find_similar(self, query: Embedding) -> list[Element]:
+    def find_similar(self, query: list[float]) -> list[Element]:
         elements, distances = self.find_similar_with_distances(query)
         return elements
 
@@ -108,12 +107,12 @@ class ChromaElementStore(ElementStore):
         # TODO: implement or delete
         pass
 
-    def find_similar_with_distances(self, query: Embedding) -> (list[Element], list[float]):
+    def find_similar_with_distances(self, query: list[float]) -> (list[Element], list[float]):
         metadata_filter = {
             "compare": True
         }
         # To ensure determinism: get all elements and cut off later
-        results = self.__collection.query(query.embedding, n_results=self.__compare_length, where=metadata_filter,
+        results = self.__collection.query(query, n_results=self.__compare_length, where=metadata_filter,
                                           include=["distances"])
         sorted_results = sorted(zip(results["distances"][0], results["ids"][0]))
         sorted_results = [x for x in sorted_results if x[0] <= self.__threshold]

@@ -54,34 +54,16 @@ if __name__ == '__main__':
 
     req_code_paths = [
         # (source_provider, target_provider, embedding, source_store, target_store, ground_truth, name)
-        # ("C:/Uni/WS23-24/datasets/SMOS/UC/", "C:/Uni/WS23-24/datasets/SMOS/CC/", "./storage/SMOS/embeddings/", "./storage/SMOS/", "./storage/SMOS/", "C:/Uni/WS23-24/datasets/SMOS/UC2CC.csv", "SMOS")
-        # ("C:/Uni/WS23-24/datasets/eTour_en/UC/", "C:/Uni/WS23-24/datasets/eTour_en/CC/", "./storage/eTour_en/embeddings/", "./storage/eTour_en/", "./storage/eTour_en/", "C:/Uni/WS23-24/datasets/eTour_en/UC2CC.csv", "eTour_en")
-         ("C:/Uni/WS23-24/datasets/iTrust/UC/", "C:/Uni/WS23-24/datasets/iTrust/CC/", "./storage/iTrust/embeddings/", "./storage/iTrust/", "./storage/iTrust/", "C:/Uni/WS23-24/datasets/iTrust/UC2JAVA.csv", "iTrust")
+        ("./datasets/iTrust/UC/", "./datasets/iTrust/CC/", "./storage/iTrust/embeddings/", "./storage/iTrust/",
+         "./storage/iTrust/", "./datasets/iTrust/UC2JAVA.csv", "iTrust")
     ]
 
-    sad_sam_paths = [
-        #(source_provider, target_provider, embedding, source_store, target_store, ground_truth, name)
-         ("C:/Uni/WS23-24/datasets/SAD_SAM_CODE/bigbluebutton/text_2021/bigbluebutton_1SentPerLine.txt", "C:/Uni/WS23-24/datasets/SAD_SAM_CODE/bigbluebutton/model_2021/uml/bbb.uml", "./storage/SAD_SAM_CODE/bigbluebutton/embeddings", "./storage/sad_sam_code/bigbluebutton", "./storage/sad_sam_code/bigbluebutton/", "C:/Uni/WS23-24/datasets/SAD_SAM_CODE/bigbluebutton/goldstandards/goldstandard_sad_2021-sam_2021_sad-sam.csv", "bigbluebutton")
-       , ("C:/Uni/WS23-24/datasets/SAD_SAM_CODE/jabref/text_2021/jabref.txt", "C:/Uni/WS23-24/datasets/SAD_SAM_CODE/jabref/model_2021/uml/jabref_uml.uml", "./storage/SAD_SAM_CODE/jabref/embeddings", "./storage/sad_sam_code/jabref", "./storage/sad_sam_code/jabref/", "C:/Uni/WS23-24/datasets/SAD_SAM_CODE/jabref/goldstandards/goldstandard_sad_2021-sam_2021_sad-sam.csv", "jabref")
-       , ("C:/Uni/WS23-24/datasets/SAD_SAM_CODE/mediastore/text_2016/mediastore.txt", "C:/Uni/WS23-24/datasets/SAD_SAM_CODE/mediastore/model_2016/uml/ms.uml", "./storage/SAD_SAM_CODE/mediastore/embeddings", "./storage/sad_sam_code/mediastore", "./storage/sad_sam_code/mediastore/", "C:/Uni/WS23-24/datasets/SAD_SAM_CODE/mediastore/goldstandards/goldstandard_sad_2016-sam_2016_sad-sam.csv", "mediastore")
-       , ("C:/Uni/WS23-24/datasets/SAD_SAM_CODE/teammates/text_2021/teammates.txt", "C:/Uni/WS23-24/datasets/SAD_SAM_CODE/teammates/model_2021/uml/teammates_uml.uml", "./storage/SAD_SAM_CODE/teammates/embeddings", "./storage/sad_sam_code/teammates", "./storage/sad_sam_code/teammates/", "C:/Uni/WS23-24/datasets/SAD_SAM_CODE/teammates/goldstandards/goldstandard_sad_2021-sam_2021_sad-sam.csv", "teammates")
-       , ("C:/Uni/WS23-24/datasets/SAD_SAM_CODE/teastore/text_2020/teastore.txt", "C:/Uni/WS23-24/datasets/SAD_SAM_CODE/teastore/model_2020/uml/teastore_uml.uml", "./storage/SAD_SAM_CODE/teastore/embeddings", "./storage/sad_sam_code/teastore", "./storage/sad_sam_code/teastore/", "C:/Uni/WS23-24/datasets/SAD_SAM_CODE/teastore/goldstandards/goldstandard_sad_2020-sam_2020_sad-sam.csv", "teastore")
-    ]
-
-    sad_code_paths = [
-        ("C:/Uni/WS23-24/datasets/SAD_SAM_CODE/bigbluebutton/text_2021/bigbluebutton_1SentPerLine.txt", "C:/Uni/WS23-24/datasets/SAD_SAM_CODE/bigbluebutton/code/bigbluebutton", "./storage/SAD_SAM_CODE/bigbluebutton/embeddings", "./storage/sad_sam_code/bigbluebutton", "./storage/sad_sam_code/bigbluebutton/", "C:/Uni/WS23-24/datasets/SAD_SAM_CODE/bigbluebutton/goldstandards/goldstandard_sad-code.csv", "bigbluebutton")
-        #, ("C:/Uni/WS23-24/datasets/SAD_SAM_CODE/jabref/text_2021/jabref.txt", "C:/Uni/WS23-24/datasets/SAD_SAM_CODE/jabref/code/jabref", "./storage/SAD_SAM_CODE/jabref/embeddings", "./storage/sad_sam_code/jabref", "./storage/sad_sam_code/jabref/", "C:/Uni/WS23-24/datasets/SAD_SAM_CODE/jabref/goldstandards/goldstandard_sad-code.csv", "jabref")
-        , ("C:/Uni/WS23-24/datasets/SAD_SAM_CODE/mediastore/text_2016/mediastore.txt", "C:/Uni/WS23-24/datasets/SAD_SAM_CODE/mediastore/code/MediaStore3", "./storage/SAD_SAM_CODE/mediastore/embeddings", "./storage/sad_sam_code/mediastore", "./storage/sad_sam_code/mediastore/", "C:/Uni/WS23-24/datasets/SAD_SAM_CODE/mediastore/goldstandards/goldstandard_sad-code.csv", "mediastore")
-        #, ("C:/Uni/WS23-24/datasets/SAD_SAM_CODE/teammates/text_2021/teammates.txt", "C:/Uni/WS23-24/datasets/SAD_SAM_CODE/teammates/code/teammates.uml", "./storage/SAD_SAM_CODE/teammates/embeddings", "./storage/sad_sam_code/teammates", "./storage/sad_sam_code/teammates/", "C:/Uni/WS23-24/datasets/SAD_SAM_CODE/teammates/goldstandards/goldstandard_sad-code.csv", "teammates")
-        , ("C:/Uni/WS23-24/datasets/SAD_SAM_CODE/teastore/text_2020/teastore.txt", "C:/Uni/WS23-24/datasets/SAD_SAM_CODE/teastore/code/TeaStore", "./storage/SAD_SAM_CODE/teastore/embeddings", "./storage/sad_sam_code/teastore", "./storage/sad_sam_code/teastore/", "C:/Uni/WS23-24/datasets/SAD_SAM_CODE/teastore/goldstandards/goldstandard_sad-code.csv", "teastore")
-    ]
-
-    path_tuples = sad_code_paths #sad_sam_paths #req_code_paths
+    path_tuples = req_code_paths  # sad_sam_paths #req_code_paths
     for tuple in path_tuples:
-        #pipeline_config = load_config("configuration_sad_sam.json")
-        pipeline_config = load_config("configuration_sad_code.json")
-        #pipeline_config = load_config("configuration_req_code.json")
-        #pipeline_config = load_config("configuration_test.json")
+        # pipeline_config = load_config("configuration_sad_sam.json")
+        # pipeline_config = load_config("configuration_sad_code.json")
+        pipeline_config = load_config("configuration_req_code.json")
+        # pipeline_config = load_config("configuration_test.json")
 
         # Override path to datasets
         pipeline_config.source_artifact_provider.args["path"] = tuple[0]
