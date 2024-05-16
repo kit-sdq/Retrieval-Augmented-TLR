@@ -1,41 +1,59 @@
 {
-    "source_artifact_provider": {
-        "name": "text",
-        "args": {"artifact_type": "requirement", "path": "path-to-requirements"}
-    },
-    "target_artifact_provider": {
-        "name": "text",
-        "args": {"artifact_type": "source code", "path": "path-to-code"}
-    },
-    "source_preprocessor": {
-        "name": "sentence",
-        "args": {"language": "en"
-        }
-    },
-    "target_preprocessor": {
-        "name": "code_chunking",
-        "args": {"language": "java","chunk_size": 200}
-    },
-    "embedding_creator": {
-        "name": "ollama",
-        "args": {"path": "./storage/eTour_en/embeddings/"}
-    },
-    "source_store": {
-        "name": "custom",
-        "args": {"direction": "source", "path": "./storage/eTour_en_source/"}
-    },
-    "target_store": {
-        "name": "custom",
-        "args": {"direction": "target", "path": "./storage/eTour_en_target/", "similarity_function": "cosine", "n_results": 50}
-    },
-    "classifier": {
-        "name": "reasoning_ollama",
-        "args": {}
-    },
-    "result_aggregator": {
-        "name": "any_connection",
-        "args": {
-            "source_granularity": 0
-        }
+  "source_artifact_provider": {
+    "name": "text",
+    "args": {
+      "artifact_type": "requirement",
+      "path": "path-to-requirements"
     }
+  },
+  "target_artifact_provider": {
+    "name": "text",
+    "args": {
+      "artifact_type": "source code",
+      "path": "path-to-code"
+    }
+  },
+  "source_preprocessor": {
+    "name": "sentence",
+    "args": {
+      "language": "en"
+    }
+  },
+  "target_preprocessor": {
+    "name": "code_chunking",
+    "args": {
+      "language": "java",
+      "chunk_size": 200
+    }
+  },
+  "embedding_creator": {
+    "name": "ollama",
+    "args": {
+      "path": "path-to-embeddings"
+    }
+  },
+  "source_store": {
+    "name": "custom",
+    "args": {
+      "direction": "source",
+      "path": "path-to-storage"
+    }
+  },
+  "target_store": {
+    "name": "custom",
+    "args": {
+      "direction": "target",
+      "path": "path-to-storage"
+    }
+  },
+  "classifier": {
+    "name": "reasoning_ollama",
+    "args": {}
+  },
+  "result_aggregator": {
+    "name": "any_connection",
+    "args": {
+      "source_granularity": 0
+    }
+  }
 }

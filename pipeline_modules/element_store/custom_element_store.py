@@ -11,22 +11,49 @@ from hashlib import shake_128
 class CustomElementStore(ElementStore):
 
     def __init__(self, configuration: ModuleConfiguration):
-        self.__configuration = configuration
-        self.__path = self.__configuration.args["path"]
-        self.__max_results = self.__configuration.args.get("max_results", 10)
-        self.__similarity_function = self.__configuration.args.get("similarity_function", "cosine")
-        self.__elements: dict[str, EmbeddedElement] = {}
+        self._configuration = configuration
+        self._path = self._configuration.args["path"]
+        self._direction = self._configuration.args["direction"]
 
-    def __config_hash(self, previous_modules_key: str) -> str:
-        hash = shake_128()
-        hash.update(self.__configuration.name.encode())
-        hash.update(self.__configuration.args["direction"].encode())
-        hash.update(self.__similarity_function.encode())
-        hash.update(previous_modules_key.encode())
-        hash = hash.hexdigest(31)
-        return hash
+        if self._path is None or self._direction is None:
+            raise ValueError("Path and direction have to be set in the configuration")
+
+        self._max_results = self._configuration.args.get("max_results", 10)
+        self._elements: dict[str, EmbeddedElement] = {}
+
+    def _create_id(self, previous_modules_key: str) -> str:
+        module_id = shake_128()
+        module_id.update(self._configuration.name.encode())
+        module_id.update(self._direction.encode())
+        module_id.update(previous_modules_key.encode())
+        module_id = module_id.hexdigest(31)
+        return module_id
+
+    def create_vector_store(self,
+                            previous_modules_key: str,
+                            entries: list[EmbeddedElement]):
+        path = self._path + "/ces/" + self._create_id(previous_modules_key)
+        create_new = not os.path.exists(path) or len(os.listdir(path)) == 0
+        if create_new:
+            print("Creating new elements")
+            os.makedirs(path, exist_ok=True)
+            self._elements = {entry.element.identifier: entry for entry in entries}
+
+            if len(self._elements) != len(entries):
+                raise ValueError("Duplicate identifiers in entries")
+
+            # Save Elements
+            for i, entry in enumerate(entries):
+                with open(os.path.join(path, f"{i}.json"), 'w') as f:
+                    json_element = entry.element.to_dict()
+                    json_element["embedding"] = entry.embedding
+                    f.write(dumps(json_element))
+        else:
+            # TODO: Check if elements/embeddings are the same. Raise error if not
+            self._elements = self.__load_elements(path)
 
     def __load_elements(self, path) -> dict[str, EmbeddedElement]:
+        print("Loading existing elements")
         elements: dict[str, EmbeddedElement] = {}
         for root, _, files in os.walk(path):
             for file in files:
@@ -35,57 +62,41 @@ class CustomElementStore(ElementStore):
                     element = Element.element_from_dict(json_element)
                     embedding: list[float] = json_element["embedding"]
                     elements[element.identifier] = EmbeddedElement(element, embedding)
-                    element.parent = json_element["parent"]  # Wrong type .. has to be fixed
+                    element.parent = json_element["parent"]  # Wrong type (only id) .. will be fixed below
+
         for embedded_element in elements.values():
-            parent_id = embedded_element.element.parent  # is string
+            parent_id = embedded_element.element.parent  # is string because loaded from json
             if parent_id is not None:
                 embedded_element.element.parent = elements[parent_id].element
-        return elements
 
-    def create_vector_store(self,
-                            previous_modules_key: str,
-                            entries: list[EmbeddedElement]):
-        path = self.__path + "/" + self.__config_hash(previous_modules_key)
-        create_new = not os.path.exists(path) or len(os.listdir(path)) == 0
-        if create_new:
-            print("Creating new elements")
-            os.makedirs(path, exist_ok=True)
-            self.__elements = {entry.element.identifier: entry for entry in entries}
-            for i, entry in enumerate(entries):
-                with open(os.path.join(path, f"{i}.json"), 'w') as f:
-                    json_element = entry.element.to_dict()
-                    json_element["embedding"] = entry.embedding
-                    f.write(dumps(json_element))
-        else:
-            # TODO: Check if elements/embeddings are the same. Raise error if not
-            print("Loading existing elements")
-            self.__elements = self.__load_elements(path)
+        return elements
 
     def find_similar(self, query: list[float]) -> list[Element]:
         elements, _ = self.find_similar_with_distances(query)
         return elements
 
     def find_similar_with_distances(self, query: list[float]) -> (list[Element], list[float]):
-        if self.__similarity_function == "cosine":
-            results = self.__cosine_similarity(query)
-            return results
-        else:
-            raise NotImplementedError
+        # Cosine Similarity
+        results = self.__cosine_similarity(query)
+        return results
 
     def __cosine_similarity(self, query: list[float]) -> (list[Element], list[float]):
         results = []
-        for element in self.__elements.values():
+        elements = list(sorted(self._elements.values(), key=lambda x: x.element.identifier))
+        for element in elements:
             similarity = dot(query, element.embedding) / (norm(query) * norm(element.embedding))
             results.append((element.element, similarity))
         results.sort(key=lambda x: x[1], reverse=True)
-        return [result[0] for result in results[:self.__max_results]], [result[1] for result in
-                                                                        results[:self.__max_results]]
+        return [result[0] for result in results[:self._max_results]], [result[1] for result in
+                                                                       results[:self._max_results]]
 
     def get_by_id(self, identifier: str) -> Element:
-        return self.__elements[identifier].element
+        return self._elements[identifier].element
 
     def get_by_parent_id(self, identifier: str) -> list[EmbeddedElement]:
-        return [element for element in self.__elements.values() if element.element.parent.identifier == identifier]
+        elements = [element for element in self._elements.values() if element.element.parent.identifier == identifier]
+        return list(sorted(elements, key=lambda x: x.element.identifier))
 
     def get_all_elements(self, compare: bool = False) -> list[EmbeddedElement]:
-        return [element for element in self.__elements.values() if element.element.compare == compare]
+        elements = [element for element in self._elements.values() if element.element.compare == compare]
+        return list(sorted(elements, key=lambda x: x.element.identifier))
