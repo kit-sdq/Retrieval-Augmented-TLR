@@ -19,7 +19,7 @@ class CustomElementStore(ElementStore):
             raise ValueError("Path and direction have to be set in the configuration")
 
         self._max_results = self._configuration.args.get("max_results", 10)
-        self._elements: dict[str, EmbeddedElement] = {}
+        self._embedded_elements: dict[str, EmbeddedElement] = {}
 
     def _create_id(self, previous_modules_key: str) -> str:
         module_id = shake_128()
@@ -37,9 +37,9 @@ class CustomElementStore(ElementStore):
         if create_new:
             print("Creating new elements")
             os.makedirs(path, exist_ok=True)
-            self._elements = {entry.element.identifier: entry for entry in entries}
+            self._embedded_elements = {entry.element.identifier: entry for entry in entries}
 
-            if len(self._elements) != len(entries):
+            if len(self._embedded_elements) != len(entries):
                 raise ValueError("Duplicate identifiers in entries")
 
             # Save Elements
@@ -50,7 +50,7 @@ class CustomElementStore(ElementStore):
                     f.write(dumps(json_element))
         else:
             # TODO: Check if elements/embeddings are the same. Raise error if not
-            self._elements = self.__load_elements(path)
+            self._embedded_elements = self.__load_elements(path)
 
     def __load_elements(self, path) -> dict[str, EmbeddedElement]:
         print("Loading existing elements")
@@ -82,8 +82,7 @@ class CustomElementStore(ElementStore):
 
     def __cosine_similarity(self, query: list[float]) -> (list[Element], list[float]):
         results = []
-        elements = list(sorted(self._elements.values(), key=lambda x: x.element.identifier))
-        for element in elements:
+        for element in self.get_all_elements(compare=True):
             similarity = dot(query, element.embedding) / (norm(query) * norm(element.embedding))
             results.append((element.element, similarity))
         results.sort(key=lambda x: x[1], reverse=True)
@@ -91,12 +90,14 @@ class CustomElementStore(ElementStore):
                                                                        results[:self._max_results]]
 
     def get_by_id(self, identifier: str) -> Element:
-        return self._elements[identifier].element
+        return self._embedded_elements[identifier].element
 
     def get_by_parent_id(self, identifier: str) -> list[EmbeddedElement]:
-        elements = [element for element in self._elements.values() if element.element.parent.identifier == identifier]
+        elements = [e for e in self._embedded_elements.values() if
+                    e.element.parent and e.element.parent.identifier == identifier]
         return list(sorted(elements, key=lambda x: x.element.identifier))
 
     def get_all_elements(self, compare: bool = False) -> list[EmbeddedElement]:
-        elements = [element for element in self._elements.values() if element.element.compare == compare]
+        # If true, only return elements that are marked for comparison otherwise all elements
+        elements = [element for element in self._embedded_elements.values() if element.element.compare or not compare]
         return list(sorted(elements, key=lambda x: x.element.identifier))

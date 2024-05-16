@@ -21,7 +21,7 @@ class OLLAMAEmbeddingCreator(EmbeddingCreator):
         configuration.args.pop("path")
         dotenv.load_dotenv()
 
-        host = os.environ.get("OLLAMA_HOST")
+        host = os.environ.get("OLLAMA_EMBEDDING_HOST")
         username = os.environ.get("OLLAMA_USER")
         password = os.environ.get("OLLAMA_PASSWORD")
 
